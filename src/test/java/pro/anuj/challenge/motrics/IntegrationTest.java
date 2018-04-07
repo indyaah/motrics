@@ -1,5 +1,6 @@
 package pro.anuj.challenge.motrics;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class IntegrationTest {
 
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private Docket docket;
 
@@ -34,8 +36,14 @@ public class IntegrationTest {
 
     @Test
     public void exampleTest() throws IOException {
-        ResponseEntity entity = this.restTemplate.getForEntity("/health", String.class);
+
+        final ResponseEntity entity = this.restTemplate.getForEntity("/health", String.class);
+
+        final Map<String, String> value = mapper.readValue(entity.getBody().toString(),
+                new TypeReference<Map<String, String>>() {
+                }
+        );
         assertThat(entity.getStatusCode().is2xxSuccessful()).isEqualTo(true);
-        assertThat(objectMapper.readTree(entity.getBody().toString()).get("status").toString()).isEqualTo("\"UP\"");
+        assertThat(value.get("status")).isEqualTo("UP");
     }
 }
