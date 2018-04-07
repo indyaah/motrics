@@ -19,10 +19,6 @@
         </contributor>
     </contributors>
 
-    <prerequisites>
-        <maven>3.5.2</maven>
-    </prerequisites>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -31,11 +27,13 @@
         <java.version.source>1.8</java.version.source>
         <java.version.target>1.8</java.version.target>
 
-        <spring.boot.version>1.5.10.RELEASE</spring.boot.version>
-        <mybatis.version>1.3.1</mybatis.version>
-        <org.liquibase.maven.plugin.version>3.5.5</org.liquibase.maven.plugin.version>
-        <docker.plugin.version>1.3.7</docker.plugin.version>
-        <junitparams.version>1.0.3</junitparams.version>
+        <maven.version>3.5.3</maven.version>
+
+        <docker.plugin.version>1.4.0</docker.plugin.version>
+        <junitparams.version>1.1.1</junitparams.version>
+        <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+        <spring.boot.version>1.5.11.RELEASE</spring.boot.version>
+        <springfox.version>2.8.0</springfox.version>
     </properties>
 
     <dependencyManagement>
@@ -78,12 +76,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.8.0</version>
+            <version>${springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.8.0</version>
+            <version>${springfox.version}</version>
         </dependency>
 
         <dependency>
@@ -106,6 +104,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -117,6 +121,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <goal>build-info</goal>
                             <goal>repackage</goal>
                         </goals>
                     </execution>
@@ -125,25 +130,72 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <source>${java.version.source}</source>
                     <target>${java.version.target}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${docker.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>build-image</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <repository>${project.artifactId}-${project.version}</repository>
+                            <buildArgs>
+                                <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                            </buildArgs>
+                            <pullNewerImage>false</pullNewerImage>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven-3</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.4</version>
+            </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.spotify</groupId>
-                    <artifactId>dockerfile-maven-plugin</artifactId>
-                    <version>${docker.plugin.version}</version>
-                    <configuration>
-                        <pullNewerImage>false</pullNewerImage>
-                        <skipPush>true</skipPush>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
 </project>
