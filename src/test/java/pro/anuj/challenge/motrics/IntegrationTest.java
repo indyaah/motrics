@@ -30,12 +30,12 @@ public class IntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void contextLoads() {
+    public void whenAppStartsContextIsCorrectlyLoaded() {
         assertThat(docket).isNotNull();
     }
 
     @Test
-    public void exampleTest() throws IOException {
+    public void whenActuatorEndpointCheckThenStatusIsUp() throws IOException {
 
         final ResponseEntity entity = this.restTemplate.getForEntity("/health", String.class);
 
@@ -46,4 +46,6 @@ public class IntegrationTest {
         assertThat(entity.getStatusCode().is2xxSuccessful()).isEqualTo(true);
         assertThat(value.get("status")).isEqualTo("UP");
     }
+
+
 }
