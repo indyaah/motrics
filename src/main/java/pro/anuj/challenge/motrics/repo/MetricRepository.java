@@ -8,6 +8,7 @@ import pro.anuj.challenge.motrics.domain.Metric;
 import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
 import pro.anuj.challenge.motrics.exception.MetricNotFoundException;
+import pro.anuj.challenge.motrics.utils.MedianHolder;
 
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +41,6 @@ public class MetricRepository {
     }
 
     // TODO: Concurrency handling
-    // TODO: Handle Median
     public Metric addValueToMetric(final UUID uuid,
                                    final Double value) {
         Metric metric = metricCache.get(uuid);
@@ -58,6 +58,9 @@ public class MetricRepository {
         if (statistics.getMaximum() < value) {
             statistics.setMaximum(value);
         }
+        final MedianHolder medianHolder = statistics.getMedianHolder();
+        medianHolder.add(value);
+        statistics.setMedian(medianHolder.getMedian());
         return metric;
     }
 }

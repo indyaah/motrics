@@ -131,6 +131,7 @@ public class IntegrationTest {
         assertThat(updatedMetric.getStatistics().getMinimum()).isEqualTo(10.0);
         assertThat(updatedMetric.getStatistics().getMaximum()).isEqualTo(10.0);
         assertThat(updatedMetric.getStatistics().getAverage()).isEqualTo(10.0);
+        assertThat(updatedMetric.getStatistics().getMedian()).isEqualTo(10.0);
     }
 
 }
