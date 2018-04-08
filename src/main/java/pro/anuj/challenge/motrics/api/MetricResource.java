@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pro.anuj.challenge.motrics.api.vo.ApiErrorResponse;
 import pro.anuj.challenge.motrics.api.vo.CreateRequest;
 import pro.anuj.challenge.motrics.domain.Metric;
 import pro.anuj.challenge.motrics.repo.MetricRepository;
@@ -32,8 +33,8 @@ public class MetricResource {
     @ApiOperation("Create a new metric entry.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Created", response = Metric.class),
-            @ApiResponse(code = 503, message = "Internal Server Error"),
-            @ApiResponse(code = 400, message = "Invalid Input")
+            @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
+            @ApiResponse(code = 400, message = "Invalid Input", response = ApiErrorResponse.class)
     })
     @PostMapping(value = "/metric", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity create(@RequestBody @Valid CreateRequest request) {
