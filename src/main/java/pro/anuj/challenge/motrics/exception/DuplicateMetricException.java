@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import static pro.anuj.challenge.motrics.Constants.DUPLICATE_METRIC;
 
-public class DuplicateMetricException extends AbstractMotricException {
+public class DuplicateMetricException extends AbstractMotricsException {
 
     private String value;
     private UUID uuid;

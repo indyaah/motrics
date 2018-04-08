@@ -5,6 +5,7 @@ import pro.anuj.challenge.motrics.api.vo.CreateRequest;
 import pro.anuj.challenge.motrics.domain.Metric;
 import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
+import pro.anuj.challenge.motrics.utils.MedianHolder;
 
 import java.util.Map;
 import java.util.UUID;
@@ -51,6 +52,8 @@ public class MetricRepositoryTest {
         when(metric.getStatistics()).thenReturn(statistics);
         when(statistics.getSampleCount()).thenReturn(2);
         when(statistics.getAverage()).thenReturn(10.0);
+        when(statistics.getMedianHolder()).thenReturn(mock(MedianHolder.class));
+
 
         sut.addValueToMetric(key, 40.0);
 
@@ -67,6 +70,7 @@ public class MetricRepositoryTest {
         when(metricCache.get(key)).thenReturn(metric);
         when(metric.getStatistics()).thenReturn(statistics);
         when(statistics.getMinimum()).thenReturn(30.0);
+        when(statistics.getMedianHolder()).thenReturn(mock(MedianHolder.class));
 
         sut.addValueToMetric(key, 10.0);
 
@@ -82,9 +86,28 @@ public class MetricRepositoryTest {
         when(metricCache.get(key)).thenReturn(metric);
         when(metric.getStatistics()).thenReturn(statistics);
         when(statistics.getMaximum()).thenReturn(10.0);
+        when(statistics.getMedianHolder()).thenReturn(mock(MedianHolder.class));
 
         sut.addValueToMetric(key, 30.0);
 
         verify(statistics, times(1)).setMaximum(30.0);
+    }
+
+    @Test
+    public void whenNewValueAddedAndThenMedianIsUpdated() {
+        Metric metric = mock(Metric.class);
+        UUID key = UUID.randomUUID();
+        Statistics statistics = mock(Statistics.class);
+
+        when(metricCache.get(key)).thenReturn(metric);
+        when(metric.getStatistics()).thenReturn(statistics);
+
+        MedianHolder mock = mock(MedianHolder.class);
+        when(statistics.getMedianHolder()).thenReturn(mock);
+        when(mock.getMedian()).thenReturn(10.0);
+
+        sut.addValueToMetric(key, 30.0);
+
+        verify(statistics, times(1)).setMedian(10.0);
     }
 }

@@ -40,7 +40,6 @@ public class MetricRepository {
         return metric;
     }
 
-    // TODO: Concurrency handling
     public Metric addValueToMetric(final UUID uuid,
                                    final Double value) {
         Metric metric = metricCache.get(uuid);

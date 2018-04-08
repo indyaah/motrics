@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import static pro.anuj.challenge.motrics.Constants.METRIC_NOT_FOUND;
 
-public class MetricNotFoundException extends AbstractMotricException {
+public class MetricNotFoundException extends AbstractMotricsException {
 
     private final UUID value;
 
