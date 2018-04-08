@@ -7,6 +7,7 @@ import pro.anuj.challenge.motrics.api.vo.CreateRequest;
 import pro.anuj.challenge.motrics.domain.Metric;
 import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
+import pro.anuj.challenge.motrics.exception.MetricNotFoundException;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +36,28 @@ public class MetricRepository {
         Metric metric = new Metric(UUID.randomUUID(), metricName, new Statistics());
         metricCache.put(metric.getId(), metric);
         nameCache.put(metricName, metric.getId());
+        return metric;
+    }
+
+    // TODO: Concurrency handling
+    // TODO: Handle Median
+    public Metric addValueToMetric(final UUID uuid,
+                                   final Double value) {
+        Metric metric = metricCache.get(uuid);
+        if (metric == null) {
+            throw new MetricNotFoundException(uuid);
+        }
+        Statistics statistics = metric.getStatistics();
+        Integer newCount = statistics.getSampleCount() + 1;
+        final Double newAvg = (statistics.getAverage() * statistics.getSampleCount() + value) / newCount;
+        statistics.setAverage(newAvg);
+        statistics.setSampleCount(newCount);
+        if (statistics.getMinimum() > value) {
+            statistics.setMinimum(value);
+        }
+        if (statistics.getMaximum() < value) {
+            statistics.setMaximum(value);
+        }
         return metric;
     }
 }

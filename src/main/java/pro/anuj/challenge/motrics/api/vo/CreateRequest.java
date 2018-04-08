@@ -18,8 +18,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class CreateRequest {
 
-    @NotNull
-    @NotEmpty
+    @NotNull(message = "Metric name cannot be null")
+    @NotEmpty(message = "Metric name cannot be empty")
     @JsonProperty("name")
     @ApiModelProperty(name = "name", dataType = "String")
     private String name;

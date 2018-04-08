@@ -3,6 +3,7 @@ package pro.anuj.challenge.motrics.repo;
 import org.junit.Test;
 import pro.anuj.challenge.motrics.api.vo.CreateRequest;
 import pro.anuj.challenge.motrics.domain.Metric;
+import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
 
 import java.util.Map;
@@ -40,4 +41,50 @@ public class MetricRepositoryTest {
     }
 
 
+    @Test
+    public void whenNewValueAddedThenAverageAndCountAreUpdated() {
+        Metric metric = mock(Metric.class);
+        UUID key = UUID.randomUUID();
+        Statistics statistics = mock(Statistics.class);
+
+        when(metricCache.get(key)).thenReturn(metric);
+        when(metric.getStatistics()).thenReturn(statistics);
+        when(statistics.getSampleCount()).thenReturn(2);
+        when(statistics.getAverage()).thenReturn(10.0);
+
+        sut.addValueToMetric(key, 40.0);
+
+        verify(statistics, times(1)).setAverage(20.0);
+        verify(statistics, times(1)).setSampleCount(3);
+    }
+
+    @Test
+    public void whenNewValueAddedAndValueLowerThanMinThenMinIsUpdated() {
+        Metric metric = mock(Metric.class);
+        UUID key = UUID.randomUUID();
+        Statistics statistics = mock(Statistics.class);
+
+        when(metricCache.get(key)).thenReturn(metric);
+        when(metric.getStatistics()).thenReturn(statistics);
+        when(statistics.getMinimum()).thenReturn(30.0);
+
+        sut.addValueToMetric(key, 10.0);
+
+        verify(statistics, times(1)).setMinimum(10.0);
+    }
+
+    @Test
+    public void whenNewValueAddedAndValueHigherThanMaxThenMaxIsUpdated() {
+        Metric metric = mock(Metric.class);
+        UUID key = UUID.randomUUID();
+        Statistics statistics = mock(Statistics.class);
+
+        when(metricCache.get(key)).thenReturn(metric);
+        when(metric.getStatistics()).thenReturn(statistics);
+        when(statistics.getMaximum()).thenReturn(10.0);
+
+        sut.addValueToMetric(key, 30.0);
+
+        verify(statistics, times(1)).setMaximum(30.0);
+    }
 }

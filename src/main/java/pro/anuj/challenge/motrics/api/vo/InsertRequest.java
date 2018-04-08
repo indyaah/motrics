@@ -3,7 +3,9 @@ package pro.anuj.challenge.motrics.api.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Setter
 @Getter
 @ApiModel
+@NoArgsConstructor
+@AllArgsConstructor
 public class InsertRequest {
 
     @NotNull
