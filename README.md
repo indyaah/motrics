@@ -20,6 +20,42 @@ Features:
 * `Docker`
 
 #### Local Setup
-* Your favourite IDE (IntelliJ/Eclipse)
-* Maven (Wrapper provided)
-* Docker
+* Your favourite IDE - Wont work with `IntelliJ IDEA 2018.1` due to Lombok plugin issue. Non released/patched plugin can be installed from disc though, [more here](https://github.com/mplushnikov/lombok-intellij-plugin/issues/468#issuecomment-377436538)
+* Maven `3.5.3` (Wrapper provided)
+* Docker (technically any moderately recent version should be fine)
+
+#### Building
+
+```bash
+./mvnw clean install
+```
+
+It will generate docker image names `motrics-1.0.0:latest` which could be run for testing.
+
+#### API Docs 
+Project contains Swagger based API Documentation which could be accessed at http://localhost:8080/swagger-ui.html
+
+#### Time Complexities of various ops
+* `O(1)` for `Creating new Metric`
+    - Constant time look up from a (Concurrent) Map
+* `O(1)` for `Reading any/all Summaries for a give metric`
+    - Constant time look up from a (Concurrent) Map and then POJO field access
+* `O(log N)` for `Insert inserting new datapoint for a given metric` 
+    - `O(log N)` - insertion time complexity of Heaps due to underlying Priority Queues
+    - `O(1)` - during balancing of the heaps
+ 
+
+
+#### Space Complexities of various ops
+* `O(n)` for `Storing Metrics`
+    - Both storage and look up maps contains same amount of elements as metrics
+* `O(n)` for `Storing all summaries exception for Median`
+    - All summaries exception median are derived values and not raw/golden data (i.e all the data points)
+* `O(kn)` for `Storing median` 
+    - `N` is number of metrics
+    - `k` is number of datapoints (items stored in priority queues)
+
+###### This `O(kn)` space complexity for `Median` could be theoratically improved by using probabilistic algos to estimate value i.e - https://link.springer.com/chapter/10.1007%2F978-3-642-40273-9_7 or https://research.neustar.biz/2013/09/16/sketch-of-the-day-frugal-streaming/
+  
+
+
