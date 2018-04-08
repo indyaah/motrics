@@ -15,8 +15,7 @@ public class MedianHolder {
     public Double getMedian() {
         if (minHeap.size() == 0 && maxHeap.size() == 0)
             return null;
-        int size = minHeap.size() + maxHeap.size();
-        if (size % 2 == 0)
+        if (minHeap.size() == maxHeap.size())
             return (maxHeap.peek() + minHeap.peek()) / 2.0;
         return maxHeap.peek();
     }
