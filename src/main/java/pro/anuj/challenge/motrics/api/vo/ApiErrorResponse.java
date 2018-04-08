@@ -21,7 +21,4 @@ public class ApiErrorResponse {
     @JsonProperty("message")
     @ApiModelProperty(name = "API error message", dataType = "String")
     private String message;
-    @JsonProperty("errorCode")
-    @ApiModelProperty(name = "http error code", dataType = "int")
-    private Integer errorCode;
 }

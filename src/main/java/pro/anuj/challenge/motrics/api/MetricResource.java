@@ -7,12 +7,14 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pro.anuj.challenge.motrics.api.vo.ApiErrorResponse;
 import pro.anuj.challenge.motrics.api.vo.CreateRequest;
 import pro.anuj.challenge.motrics.domain.Metric;
+import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
 import pro.anuj.challenge.motrics.repo.MetricRepository;
 
 import javax.validation.Valid;
@@ -41,5 +43,9 @@ public class MetricResource {
         return ok().body(repository.createMetric(request));
     }
 
+    @ExceptionHandler(DuplicateMetricException.class)
+    ResponseEntity duplicateMetric(DuplicateMetricException e) {
+        return ResponseEntity.status(e.httpStatus()).body(new ApiErrorResponse(e.message()));
+    }
 
 }
