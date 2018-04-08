@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import pro.anuj.challenge.motrics.api.vo.CreateRequest;
+import pro.anuj.challenge.motrics.domain.Metric;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.io.IOException;
@@ -37,15 +40,26 @@ public class IntegrationTest {
     @Test
     public void whenActuatorEndpointCheckThenStatusIsUp() throws IOException {
 
-        final ResponseEntity entity = this.restTemplate.getForEntity("/health", String.class);
+        final ResponseEntity entity = restTemplate.getForEntity("/health", String.class);
 
         final Map<String, String> value = mapper.readValue(entity.getBody().toString(),
                 new TypeReference<Map<String, String>>() {
                 }
         );
-        assertThat(entity.getStatusCode().is2xxSuccessful()).isEqualTo(true);
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(value.get("status")).isEqualTo("UP");
     }
 
+    @Test
+    public void whenNewMetricWithNamePostedThenNewMetricIsCreated() {
+        final String metricName = "metricName";
+        final ResponseEntity<Metric> entity = restTemplate.postForEntity("/metric", new CreateRequest(metricName), Metric.class);
 
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Metric metric = entity.getBody();
+        assertThat(metric).isNotNull();
+        assertThat(metric.getName()).isEqualTo(metricName);
+        assertThat(metric.getId().toString()).isNotBlank();
+    }
 }
