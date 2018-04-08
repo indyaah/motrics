@@ -82,6 +82,6 @@ public class IntegrationTest {
         assertThat(duplicateResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
         ApiErrorResponse apiErrorResponse = duplicateResponse.getBody();
-        assertThat(apiErrorResponse.getMessage()).contains(MessageFormat.format(Constants.TEMPLATE, metricName, metric.getId()));
+        assertThat(apiErrorResponse.getMessage()).isEqualTo(MessageFormat.format(Constants.DUPLICATE_METRIC, metricName, metric.getId()));
     }
 }

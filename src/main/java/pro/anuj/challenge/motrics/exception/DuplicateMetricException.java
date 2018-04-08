@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import java.text.MessageFormat;
 import java.util.UUID;
 
-import static pro.anuj.challenge.motrics.Constants.TEMPLATE;
+import static pro.anuj.challenge.motrics.Constants.DUPLICATE_METRIC;
 
 public class DuplicateMetricException extends AbstractMotricException {
 
@@ -20,7 +20,7 @@ public class DuplicateMetricException extends AbstractMotricException {
 
     @Override
     public String message() {
-        return MessageFormat.format(TEMPLATE, value, uuid);
+        return MessageFormat.format(DUPLICATE_METRIC, value, uuid);
     }
 
     @Override
