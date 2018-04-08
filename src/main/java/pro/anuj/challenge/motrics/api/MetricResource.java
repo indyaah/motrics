@@ -43,7 +43,7 @@ public class MetricResource {
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 400, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @PostMapping(value = "/metric", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/metric", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Metric> create(@RequestBody @Valid CreateRequest request) {
         return ok().body(repository.createMetric(request));
     }
@@ -54,7 +54,7 @@ public class MetricResource {
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @PutMapping(value = "/metric", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/metric", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Metric> put(@RequestBody @Valid InsertRequest req) {
         return ok().body(repository.addValueToMetric(req.getId(), req.getValue()));
     }
@@ -86,67 +86,67 @@ public class MetricResource {
 
     @ApiOperation("Retrieve all value for given metric.")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Successfully processed adding new value", response = Statistics.class),
+            @ApiResponse(code = 200, message = "Successfully processed adding new value", response = Statistics.class),
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @GetMapping(value = "/metric/{id}")
-    ResponseEntity<Statistics> all(@PathVariable("id") UUID id) {
+    @GetMapping(value = "/metric/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Statistics> all(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getAllStats(id));
     }
 
     @ApiOperation("Retrieve average value for given metric.")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Successfully processed adding new value", response = ValueObject.class),
+            @ApiResponse(code = 200, message = "Successfully processed adding new value", response = ValueObject.class),
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @GetMapping(value = "/metric/{id}/avg")
-    ResponseEntity<ValueObject> avg(@PathVariable("id") UUID id) {
+    @GetMapping(value = "/metric/{id}/avg", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ValueObject> avg(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getAverage(id));
     }
 
     @ApiOperation("Retrieve minimum value for given metric.")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Successfully processed adding new value", response = ValueObject.class),
+            @ApiResponse(code = 200, message = "Successfully processed adding new value", response = ValueObject.class),
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @GetMapping(value = "/metric/{id}/min")
-    ResponseEntity<ValueObject> min(@PathVariable("id") UUID id) {
+    @GetMapping(value = "/metric/{id}/min", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ValueObject> min(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getMinimum(id));
     }
 
     @ApiOperation("Retrieve maximum value for given metric.")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Successfully processed adding new value", response = ValueObject.class),
+            @ApiResponse(code = 200, message = "Successfully processed adding new value", response = ValueObject.class),
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @GetMapping(value = "/metric/{id}/max")
-    ResponseEntity<ValueObject> average(@PathVariable("id") UUID id) {
+    @GetMapping(value = "/metric/{id}/max", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ValueObject> average(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getMaximum(id));
     }
 
     @ApiOperation("Retrieve median value for given metric.")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Successfully processed adding new value", response = ValueObject.class),
+            @ApiResponse(code = 200, message = "Successfully processed adding new value", response = ValueObject.class),
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @GetMapping(value = "/metric/{id}/med")
-    ResponseEntity<ValueObject> median(@PathVariable("id") UUID id) {
+    @GetMapping(value = "/metric/{id}/med", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ValueObject> median(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getMedian(id));
     }
 
     @ApiOperation("Retrieve sample count for given metric.")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Successfully processed adding new value", response = ValueObject.class),
+            @ApiResponse(code = 200, message = "Successfully processed adding new value", response = ValueObject.class),
             @ApiResponse(code = 503, message = "Internal Server Error", response = ApiErrorResponse.class),
             @ApiResponse(code = 404, message = "Invalid Input", response = ApiErrorResponse.class)
     })
-    @GetMapping(value = "/metric/{id}/count")
-    ResponseEntity<ValueObject> sample(@PathVariable("id") UUID id) {
+    @GetMapping(value = "/metric/{id}/count", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ValueObject> sample(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getSampleCount(id));
     }
 }
