@@ -22,6 +22,6 @@ public class MetricNotFoundException extends AbstractMotricException {
 
     @Override
     public HttpStatus httpStatus() {
-        return null;
+        return HttpStatus.NOT_FOUND;
     }
 }

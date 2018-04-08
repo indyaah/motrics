@@ -11,7 +11,6 @@ public class DuplicateMetricException extends AbstractMotricException {
 
     private String value;
     private UUID uuid;
-    private final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
     public DuplicateMetricException(final String value, final UUID uuid) {
         this.value = value;
@@ -25,6 +24,6 @@ public class DuplicateMetricException extends AbstractMotricException {
 
     @Override
     public HttpStatus httpStatus() {
-        return httpStatus;
+        return HttpStatus.BAD_REQUEST;
     }
 }

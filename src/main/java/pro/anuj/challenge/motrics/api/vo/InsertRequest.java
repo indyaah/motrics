@@ -18,11 +18,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class InsertRequest {
 
-    @NotNull
+    @NotNull(message = "metric id is a required field")
     @JsonProperty("id")
     @ApiModelProperty(name = "metric id", dataType = "UUID")
     private UUID id;
-    @NotNull
+    @NotNull(message = "metric value to be inserted is a required field")
     @JsonProperty("value")
     @ApiModelProperty(name = "metric value", dataType = "Double")
     private Double value;
