@@ -20,7 +20,8 @@ Features:
 * `Docker`
 
 #### Local Setup
-* Your favourite IDE - Wont work with `IntelliJ IDEA 2018.1` due to Lombok plugin issue. Non released/patched plugin can be installed from disc though, [more here](https://github.com/mplushnikov/lombok-intellij-plugin/issues/468#issuecomment-377436538)
+* Your favourite IDE with Lombok Plugin Installed - Wont work with `IntelliJ IDEA 2018.1` due to Lombok plugin issue. Non released/patched plugin can be installed from disc though, [more here](https://github.com/mplushnikov/lombok-intellij-plugin/issues/468#issuecomment-377436538)
+    * You only need lombok if you're using an IDE, if running build via maven it doesnt need any special setup
 * Maven `3.5.3` (Wrapper provided)
 * Docker (technically any moderately recent version should be fine)
 
