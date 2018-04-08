@@ -60,30 +60,6 @@ public class MetricResource {
     }
 
 
-    @ExceptionHandler(DuplicateMetricException.class)
-    ResponseEntity<ApiErrorResponse> duplicateMetric(DuplicateMetricException e) {
-        return ResponseEntity.status(e.httpStatus()).body(new ApiErrorResponse(e.message()));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<ApiErrorResponse> validationFailed(MethodArgumentNotValidException e) {
-        final String message = format(REQUIRED_ARGUMENT_MISSING, e.getBindingResult().getFieldError().getField());
-        return ResponseEntity.badRequest().body(new ApiErrorResponse(message));
-    }
-
-    @ExceptionHandler(MetricNotFoundException.class)
-    ResponseEntity notFound(MetricNotFoundException e) {
-        log.error(e.getMessage());
-        return ResponseEntity.status(e.httpStatus()).body(e.message());
-    }
-
-
-    @ExceptionHandler(RuntimeException.class)
-    ResponseEntity error(RuntimeException e) {
-        log.error(e.getMessage());
-        return ResponseEntity.status(500).body(new ApiErrorResponse("Internal Server Error"));
-    }
-
     @ApiOperation("Retrieve all value for given metric.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully processed adding new value", response = Statistics.class),
@@ -149,4 +125,29 @@ public class MetricResource {
     ResponseEntity<ValueObject> sample(@PathVariable("id") @Valid UUID id) {
         return ok().body(repository.getSampleCount(id));
     }
+
+    @ExceptionHandler(DuplicateMetricException.class)
+    ResponseEntity<ApiErrorResponse> duplicateMetric(DuplicateMetricException e) {
+        return ResponseEntity.status(e.httpStatus()).body(new ApiErrorResponse(e.message()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<ApiErrorResponse> validationFailed(MethodArgumentNotValidException e) {
+        final String message = format(REQUIRED_ARGUMENT_MISSING, e.getBindingResult().getFieldError().getField());
+        return ResponseEntity.badRequest().body(new ApiErrorResponse(message));
+    }
+
+    @ExceptionHandler(MetricNotFoundException.class)
+    ResponseEntity notFound(MetricNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(e.httpStatus()).body(e.message());
+    }
+
+
+    @ExceptionHandler(RuntimeException.class)
+    ResponseEntity error(RuntimeException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(500).body(new ApiErrorResponse("Internal Server Error"));
+    }
+
 }

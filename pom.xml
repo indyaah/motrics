@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,10 +30,11 @@
         <maven.version>3.5.3</maven.version>
 
         <docker.plugin.version>1.4.0</docker.plugin.version>
-        <junitparams.version>1.1.1</junitparams.version>
+        <gatling.version>2.2.4</gatling.version>
         <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
         <spring.boot.version>1.5.11.RELEASE</spring.boot.version>
         <springfox.version>2.8.0</springfox.version>
+        <scala.maven.plugin.version>3.2.2</scala.maven.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -99,14 +100,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>pl.pragmatists</groupId>
-            <artifactId>JUnitParams</artifactId>
-            <version>${junitparams.version}</version>
+            <groupId>io.gatling.highcharts</groupId>
+            <artifactId>gatling-charts-highcharts</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
+        <defaultGoal>spring-boot:run</defaultGoal>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -198,7 +200,16 @@
                 <artifactId>git-commit-id-plugin</artifactId>
                 <version>2.2.4</version>
             </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala.maven.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-maven-plugin</artifactId>
+                <version>${gatling.version}</version>
+            </plugin>
         </plugins>
     </build>
-
 </project>
