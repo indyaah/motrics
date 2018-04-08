@@ -17,7 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pro.anuj.challenge.motrics.api.vo.ApiErrorResponse;
 import pro.anuj.challenge.motrics.api.vo.CreateRequest;
 import pro.anuj.challenge.motrics.api.vo.InsertRequest;
+import pro.anuj.challenge.motrics.api.vo.ValueObject;
 import pro.anuj.challenge.motrics.domain.Metric;
+import pro.anuj.challenge.motrics.domain.Statistics;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.io.IOException;
@@ -64,7 +66,7 @@ public class IntegrationTest {
 
     @Test
     public void whenNewMetricWithNamePostedThenNewMetricIsCreated() {
-        final String metricName = "metricName";
+        final String metricName = "metricName1";
         final ResponseEntity<Metric> entity = restTemplate.postForEntity("/metric", new CreateRequest(metricName), Metric.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(OK);
@@ -85,7 +87,7 @@ public class IntegrationTest {
 
     @Test
     public void whenDuplicateMetricTheException() {
-        final String metricName = String.valueOf(System.currentTimeMillis());
+        final String metricName = "metricName2";
         final ResponseEntity<Metric> entity = restTemplate.postForEntity("/metric", new CreateRequest(metricName), Metric.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(OK);
@@ -105,7 +107,7 @@ public class IntegrationTest {
 
     @Test
     public void whenNewMetricValuePostedThenMetricHasValues() {
-        final String metricName = String.valueOf(System.currentTimeMillis());
+        final String metricName = "metricname3";
         final ResponseEntity<Metric> entity = restTemplate.postForEntity("/metric", new CreateRequest(metricName), Metric.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(OK);
@@ -132,6 +134,37 @@ public class IntegrationTest {
         assertThat(updatedMetric.getStatistics().getMaximum()).isEqualTo(10.0);
         assertThat(updatedMetric.getStatistics().getAverage()).isEqualTo(10.0);
         assertThat(updatedMetric.getStatistics().getMedian()).isEqualTo(10.0);
+
+        final ResponseEntity<Statistics> all = restTemplate.getForEntity("/metric/" + metric.getId(), Statistics.class);
+
+        assertThat(all).isNotNull();
+
+        assertThat(all.getBody()).isNotNull();
+        assertThat(all.getBody().getSampleCount()).isEqualTo(1);
+        assertThat(all.getBody().getMinimum()).isEqualTo(10.0);
+        assertThat(all.getBody().getMaximum()).isEqualTo(10.0);
+        assertThat(all.getBody().getAverage()).isEqualTo(10.0);
+        assertThat(all.getBody().getMedian()).isEqualTo(10.0);
+
+        final ResponseEntity<ValueObject> min = restTemplate.getForEntity("/metric/" + metric.getId() + "/min", ValueObject.class);
+        assertThat(min).isNotNull();
+        assertThat(min.getBody().getValue()).isEqualTo(10.0);
+
+        final ResponseEntity<ValueObject> max = restTemplate.getForEntity("/metric/" + metric.getId() + "/max", ValueObject.class);
+        assertThat(max).isNotNull();
+        assertThat(max.getBody().getValue()).isEqualTo(10.0);
+
+        final ResponseEntity<ValueObject> avg = restTemplate.getForEntity("/metric/" + metric.getId() + "/avg", ValueObject.class);
+        assertThat(avg).isNotNull();
+        assertThat(avg.getBody().getValue()).isEqualTo(10.0);
+
+        final ResponseEntity<ValueObject> median = restTemplate.getForEntity("/metric/" + metric.getId() + "/med", ValueObject.class);
+        assertThat(median).isNotNull();
+        assertThat(median.getBody().getValue()).isEqualTo(10.0);
+
+        final ResponseEntity<ValueObject> count = restTemplate.getForEntity("/metric/" + metric.getId() + "/count", ValueObject.class);
+        assertThat(count).isNotNull();
+        assertThat(count.getBody().getValue()).isEqualTo(1);
     }
 
 }

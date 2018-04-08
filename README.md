@@ -55,7 +55,79 @@ Project contains Swagger based API Documentation which could be accessed at http
     - `N` is number of metrics
     - `k` is number of datapoints (items stored in priority queues)
 
-###### This `O(kn)` space complexity for `Median` could be theoratically improved by using probabilistic algos to estimate value i.e - https://link.springer.com/chapter/10.1007%2F978-3-642-40273-9_7 or https://research.neustar.biz/2013/09/16/sketch-of-the-day-frugal-streaming/
+###### This (`O(kn)` space complexity for `Median`) could be theoratically improved by using probabilistic algos to estimate value i.e - https://link.springer.com/chapter/10.1007%2F978-3-642-40273-9_7 or https://research.neustar.biz/2013/09/16/sketch-of-the-day-frugal-streaming/
   
+#### Examples
+1. Save/Create new entry 
+```bash
+curl -X POST \
+  http://localhost:8080/metric \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "name": "soma_metric"
+      }' 
+```
 
+2. Add value to a metric
+```bash
+curl -X PUT \
+  'http://localhost:8080/metric' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+  -d '{
+        "id": "<VALID_UUID>",
+        "value": <VALID_DOUBLE>
+      }' 
+```
+
+3. Find all summaries for given metric
+```bash
+curl -X GET \
+  'http://localhost:8080/metric/<VALID_UUID>/all' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+```
+4. Find min for given metric
+```bash
+curl -X GET \
+  'http://localhost:8080/metric/<VALID_UUID>/min' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+```
+
+5. Find max for given metric
+```bash
+curl -X GET \
+  'http://localhost:8080/metric/<VALID_UUID>/max' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+```
+
+6. Find average for given metric
+```bash
+curl -X GET \
+  'http://localhost:8080/metric/<VALID_UUID>/avg' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+```
+
+7. Find median for given metric
+```bash
+curl -X GET \
+  'http://localhost:8080/metric/<VALID_UUID>/med' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+```
+
+8. Find sample count for given metric
+```bash
+curl -X GET \
+  'http://localhost:8080/metric/<VALID_UUID>/count' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Encoding: gzip, deflate, br'
+```
 

@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.anuj.challenge.motrics.api.vo.CreateRequest;
+import pro.anuj.challenge.motrics.api.vo.ValueObject;
 import pro.anuj.challenge.motrics.domain.Metric;
 import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
@@ -71,4 +72,33 @@ public class MetricRepository {
         statistics.setMedian(medianHolder.getMedian());
         return metric;
     }
+
+    public Statistics getAllStats(UUID uuid) {
+        Metric metric = metricCache.get(uuid);
+        if (metric == null) {
+            throw new MetricNotFoundException(uuid);
+        }
+        return metric.getStatistics();
+    }
+
+    public ValueObject getAverage(UUID uuid) {
+        return new ValueObject(getAllStats(uuid).getAverage());
+    }
+
+    public ValueObject getMinimum(UUID uuid) {
+        return new ValueObject(getAllStats(uuid).getMinimum());
+    }
+
+    public ValueObject getMaximum(UUID uuid) {
+        return new ValueObject(getAllStats(uuid).getMaximum());
+    }
+
+    public ValueObject getMedian(UUID uuid) {
+        return new ValueObject(getAllStats(uuid).getMedian());
+    }
+
+    public ValueObject getSampleCount(UUID uuid) {
+        return new ValueObject(getAllStats(uuid).getSampleCount());
+    }
+
 }
