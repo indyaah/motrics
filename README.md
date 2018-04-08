@@ -30,7 +30,7 @@ Features:
 ./mvnw clean install
 ```
 
-It will generate docker image names `motrics-1.0.0:latest` which could be run for testing.
+It will generate docker image named `motrics-1.0.0:latest` which could be run for testing.
 
 #### API Docs 
 Project contains Swagger based API Documentation which could be accessed at http://localhost:8080/swagger-ui.html
@@ -87,9 +87,9 @@ curl -X PUT \
 3. Find all summaries for given metric
 ```bash
 curl -X GET \
-  'http://localhost:8080/metric/<VALID_UUID>/all' \
+  'http://localhost:8080/metric/<VALID_UUID>' \
   -H 'Accept: application/json' \
-  -H 'Accept-Encoding: gzip, deflate, br'
+  -H 'Accept-Encoding: gzip, deflate, br' \
 ```
 4. Find min for given metric
 ```bash
