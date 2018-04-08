@@ -34,6 +34,7 @@ public class MetricRepository {
         }
         Metric metric = new Metric(UUID.randomUUID(), metricName, new Statistics());
         metricCache.put(metric.getId(), metric);
+        nameCache.put(metricName, metric.getId());
         return metric;
     }
 }
