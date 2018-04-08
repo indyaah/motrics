@@ -9,6 +9,7 @@ import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
 import pro.anuj.challenge.motrics.exception.MetricNotFoundException;
 import pro.anuj.challenge.motrics.utils.MedianHolder;
+import pro.anuj.challenge.motrics.utils.StripedLockProvider;
 
 import java.util.Map;
 import java.util.UUID;
@@ -19,12 +20,15 @@ public class MetricRepository {
 
     private final Map<UUID, Metric> metricCache;
     private final Map<String, UUID> nameCache;
+    private final StripedLockProvider<UUID, Metric> stripedLockProvider;
 
     @Autowired
     public MetricRepository(final Map<UUID, Metric> metricCache,
-                            final Map<String, UUID> nameCache) {
+                            final Map<String, UUID> nameCache,
+                            final StripedLockProvider<UUID, Metric> stripedLockProvider) {
         this.metricCache = metricCache;
         this.nameCache = nameCache;
+        this.stripedLockProvider = stripedLockProvider;
     }
 
     public Metric createMetric(final CreateRequest request) throws DuplicateMetricException {
@@ -42,6 +46,11 @@ public class MetricRepository {
 
     public Metric addValueToMetric(final UUID uuid,
                                    final Double value) {
+        return stripedLockProvider.executeLocked(uuid, () -> addValueToMetricConcurrently(uuid, value));
+    }
+
+    Metric addValueToMetricConcurrently(final UUID uuid,
+                                        final Double value) {
         Metric metric = metricCache.get(uuid);
         if (metric == null) {
             throw new MetricNotFoundException(uuid);

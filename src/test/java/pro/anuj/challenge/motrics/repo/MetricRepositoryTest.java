@@ -6,6 +6,7 @@ import pro.anuj.challenge.motrics.domain.Metric;
 import pro.anuj.challenge.motrics.domain.Statistics;
 import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
 import pro.anuj.challenge.motrics.utils.MedianHolder;
+import pro.anuj.challenge.motrics.utils.StripedLockProvider;
 
 import java.util.Map;
 import java.util.UUID;
@@ -19,8 +20,9 @@ public class MetricRepositoryTest {
     private final Map<UUID, Metric> metricCache = mock(Map.class);
     private final Map<String, UUID> nameCache = mock(Map.class);
     private final CreateRequest createRequest = mock(CreateRequest.class);
+    private StripedLockProvider<UUID, Metric> stripedLockProvider = mock(StripedLockProvider.class);
 
-    private final MetricRepository sut = new MetricRepository(metricCache, nameCache);
+    private final MetricRepository sut = new MetricRepository(metricCache, nameCache, stripedLockProvider);
 
     @Test
     public void whenNewMetricThenCreated() {
@@ -55,7 +57,7 @@ public class MetricRepositoryTest {
         when(statistics.getMedianHolder()).thenReturn(mock(MedianHolder.class));
 
 
-        sut.addValueToMetric(key, 40.0);
+        sut.addValueToMetricConcurrently(key, 40.0);
 
         verify(statistics, times(1)).setAverage(20.0);
         verify(statistics, times(1)).setSampleCount(3);
@@ -72,7 +74,7 @@ public class MetricRepositoryTest {
         when(statistics.getMinimum()).thenReturn(30.0);
         when(statistics.getMedianHolder()).thenReturn(mock(MedianHolder.class));
 
-        sut.addValueToMetric(key, 10.0);
+        sut.addValueToMetricConcurrently(key, 10.0);
 
         verify(statistics, times(1)).setMinimum(10.0);
     }
@@ -88,7 +90,7 @@ public class MetricRepositoryTest {
         when(statistics.getMaximum()).thenReturn(10.0);
         when(statistics.getMedianHolder()).thenReturn(mock(MedianHolder.class));
 
-        sut.addValueToMetric(key, 30.0);
+        sut.addValueToMetricConcurrently(key, 30.0);
 
         verify(statistics, times(1)).setMaximum(30.0);
     }
@@ -106,7 +108,7 @@ public class MetricRepositoryTest {
         when(statistics.getMedianHolder()).thenReturn(mock);
         when(mock.getMedian()).thenReturn(10.0);
 
-        sut.addValueToMetric(key, 30.0);
+        sut.addValueToMetricConcurrently(key, 30.0);
 
         verify(statistics, times(1)).setMedian(10.0);
     }

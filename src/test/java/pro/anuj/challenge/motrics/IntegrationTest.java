@@ -85,7 +85,7 @@ public class IntegrationTest {
 
     @Test
     public void whenDuplicateMetricTheException() {
-        final String metricName = "DUPLICATE_METRIC";
+        final String metricName = String.valueOf(System.currentTimeMillis());
         final ResponseEntity<Metric> entity = restTemplate.postForEntity("/metric", new CreateRequest(metricName), Metric.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(OK);
@@ -105,7 +105,7 @@ public class IntegrationTest {
 
     @Test
     public void whenNewMetricValuePostedThenMetricHasValues() {
-        final String metricName = "DUPLICATE_METRIC";
+        final String metricName = String.valueOf(System.currentTimeMillis());
         final ResponseEntity<Metric> entity = restTemplate.postForEntity("/metric", new CreateRequest(metricName), Metric.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(OK);
