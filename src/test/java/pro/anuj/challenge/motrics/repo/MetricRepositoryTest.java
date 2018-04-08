@@ -8,8 +8,7 @@ import pro.anuj.challenge.motrics.exception.DuplicateMetricException;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
 public class MetricRepositoryTest {
@@ -20,6 +19,17 @@ public class MetricRepositoryTest {
     private final CreateRequest createRequest = mock(CreateRequest.class);
 
     private final MetricRepository sut = new MetricRepository(metricCache, nameCache);
+
+    @Test
+    public void whenNewMetricThenCreated() {
+        when(nameCache.get(METRIC_NAME)).thenReturn(null);
+        when(createRequest.getName()).thenReturn(METRIC_NAME);
+
+        sut.createMetric(createRequest);
+
+        verify(metricCache, times(1)).put(any(), any());
+        verify(nameCache, times(1)).put(eq(METRIC_NAME), any());
+    }
 
     @Test(expected = DuplicateMetricException.class)
     public void whenMetricWithSameNameAlreadyExistsThenException() {
